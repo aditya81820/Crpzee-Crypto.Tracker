@@ -41,7 +41,7 @@ fun MarketCap(controller: NavController, padding: PaddingValues, viewModel: Main
 
     Column(modifier = Modifier.padding(padding)) {
         // Show loading indicator if data is loading
-        if (isLoading) {
+        if (isLoading ) {
             Box(
                 modifier = Modifier
                     .fillMaxSize(),

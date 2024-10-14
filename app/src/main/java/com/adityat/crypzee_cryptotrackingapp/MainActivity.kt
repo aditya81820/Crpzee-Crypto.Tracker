@@ -88,7 +88,7 @@ fun Navigation(navController: NavController, padding: PaddingValues, viewModel: 
 
         }
         composable(Screen.BottomScreens.topScreens.Losers.route) {
-            Losers()
+            Losers(controller = navController, padding = padding,viewModel)
         }
 
     }

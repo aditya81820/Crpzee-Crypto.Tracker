@@ -40,6 +40,7 @@ fun Gainer(controller: NavController, padding: PaddingValues, viewModel: MainVie
                     color =  Color.White
                 )
 
+
             }
         } else {
             // Show coin list when not loading

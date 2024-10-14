@@ -36,6 +36,7 @@ class MainViewModel : ViewModel() {
     init {
         fetchCoins()
         fetchGainerCoins()
+        fetchLosersCoins()
     }
 
     private fun fetchCoins() {
@@ -54,7 +55,7 @@ class MainViewModel : ViewModel() {
         }
     }
 
-    //Data handling for get top gainers
+    //Data handling for get top Gainers
     val gainercoinlist: MutableState<List<CoinData>> = mutableStateOf(emptyList())
     val isLoadinggainer = mutableStateOf(true)
     val errorMessagegainer = mutableStateOf<String?>(null)
@@ -76,6 +77,31 @@ class MainViewModel : ViewModel() {
             }
         }
     }
+
+    //Data handling for get top losers
+    val loserscoinlist: MutableState<List<CoinData>> = mutableStateOf(emptyList())
+    val isLoadingloser= mutableStateOf(true)
+    val errorMessageloser = mutableStateOf<String?>(null)
+
+    private fun fetchLosersCoins() {
+        viewModelScope.launch {
+            isLoading.value = true
+            delay(2000)
+            try {
+                val losercoin = coinsService.getTopGainers()
+                    .filter { (it.price_change_percentage_24h ?: 0.0) < 0 }  // Only positive percentage gainers
+                    .sortedBy { it.price_change_percentage_24h }
+                loserscoinlist.value = losercoin
+                errorMessageloser.value = null // Clear error if successful
+            } catch (e: Exception) {
+                errorMessageloser.value = "Error loading data: ${e.message}"
+            } finally {
+                isLoadingloser.value = false
+            }
+        }
+    }
+
+
 
 
     //Data handling of Coin chart

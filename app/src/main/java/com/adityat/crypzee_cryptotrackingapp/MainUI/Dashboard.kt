@@ -1,4 +1,3 @@
-@file:Suppress("UNUSED_EXPRESSION")
 
 package com.adityat.crypzee_cryptotrackingapp.MainUI
 
