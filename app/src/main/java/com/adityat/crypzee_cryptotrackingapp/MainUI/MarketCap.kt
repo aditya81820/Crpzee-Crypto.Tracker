@@ -1,6 +1,7 @@
 package com.adityat.crypzee_cryptotrackingapp.MainUI
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -29,14 +30,21 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import com.adityat.crypzee_cryptotrackingapp.Data.CoinData
 import com.adityat.crypzee_cryptotrackingapp.R
+import com.adityat.crypzee_cryptotrackingapp.Screen
 import com.adityat.crypzee_cryptotrackingapp.Viewmodel.MainViewModel
 
 @Composable
-fun MarketCap(controller: NavController, padding: PaddingValues, viewModel: MainViewModel) {
+fun MarketCap(
+
+    navControllerOld: NavHostController,
+    padding: PaddingValues,
+    viewModel: MainViewModel,
+
+    ) {
     val coinList by viewModel.coinList
     val isLoading by viewModel.isLoading
 
@@ -68,7 +76,7 @@ fun MarketCap(controller: NavController, padding: PaddingValues, viewModel: Main
             LazyColumn(modifier = Modifier.fillMaxSize()) {
 
                 items(coinList, key = { it.id }) { coin ->
-                    CoinItem(coin)
+                    CoinItem(coin , navControllerOld)
                     Row(modifier = Modifier.padding(start = 12.dp, end = 12.dp)) {
                         Divider()
                     }
@@ -79,73 +87,84 @@ fun MarketCap(controller: NavController, padding: PaddingValues, viewModel: Main
 }
 
 @Composable
-fun CoinItem(coin: CoinData) {
+fun CoinItem(coin: CoinData, navControllerOld: NavHostController) {
     val color = if (coin.price_change_percentage_24h < 0) {
         Color.Red
     } else {
         Color(0xff32cd32)
     }
+    val id = coin.id
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp),
+            .clickable {
+                navControllerOld.navigate("${Screen.entityScreen.CoinDescription.route}/${id}")
+            },
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Row {
-            val painter = rememberAsyncImagePainter(
-                model = coin.image,
-                placeholder = painterResource(R.drawable.placeholder),
-                error = painterResource(R.drawable.error)
-            )
-
-            Image(
-                painter = painter,
-                contentDescription = "",
-                modifier = Modifier.size(28.dp),
-                contentScale = ContentScale.Crop
-            )
-
-            Column(modifier = Modifier.padding(start = 12.dp)) {
-                Text(
-                    text = coin.name,
-                    style = MaterialTheme.typography.bodyLarge,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 17.sp
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Row {
+                val painter = rememberAsyncImagePainter(
+                    model = coin.image,
+                    placeholder = painterResource(R.drawable.placeholder),
+                    error = painterResource(R.drawable.error)
                 )
 
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Card(
-                        colors = CardDefaults.cardColors(
-                            containerColor = Color.LightGray,
-                            contentColor = Color.Black
-                        ),
-                        border = CardDefaults.outlinedCardBorder(enabled = true),
-                        shape = RoundedCornerShape(3.dp),
-                        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
-                    ) {
+                Image(
+                    painter = painter,
+                    contentDescription = "",
+                    modifier = Modifier.size(28.dp),
+                    contentScale = ContentScale.Crop
+                )
 
-                        Text(
-                            text = String.format("%02d", coin.market_cap_rank),
-                            fontSize = 12.sp,
-                            modifier = Modifier.padding(1.dp)
-                        )
+                Column(modifier = Modifier.padding(start = 12.dp)) {
+                    Text(
+                        text = coin.name,
+                        style = MaterialTheme.typography.bodyLarge,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 17.sp
+                    )
+
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Card(
+                            colors = CardDefaults.cardColors(
+                                containerColor = Color.LightGray,
+                                contentColor = Color.Black
+                            ),
+                            border = CardDefaults.outlinedCardBorder(enabled = true),
+                            shape = RoundedCornerShape(3.dp),
+                            elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+                        ) {
+
+                            Text(
+                                text = String.format("%02d", coin.market_cap_rank),
+                                fontSize = 12.sp,
+                                modifier = Modifier.padding(1.dp)
+                            )
+                        }
+                        val coinsymbol = coin.symbol
+                        val capitalizedString = coinsymbol.uppercase()
+
+                        Text(text = " ${capitalizedString}", fontWeight = FontWeight.Bold, fontSize = 14.sp)
                     }
-                    val coinsymbol = coin.symbol
-                    val capitalizedString = coinsymbol.uppercase()
-
-                    Text(text = " ${capitalizedString}", fontWeight = FontWeight.Bold, fontSize = 14.sp)
                 }
             }
+
+            Text(text = "$${coin.current_price}", fontWeight = FontWeight.W500)
+
+            Text(
+                text = String.format("%.2f", coin.price_change_percentage_24h) + "%",
+                fontWeight = FontWeight.SemiBold,
+                color = color
+            )
         }
-
-        Text(text = "$${coin.current_price}", fontWeight = FontWeight.W500)
-
-        Text(
-            text = String.format("%.2f", coin.price_change_percentage_24h) + "%",
-            fontWeight = FontWeight.SemiBold,
-            color = color
-        )
 
 
     }

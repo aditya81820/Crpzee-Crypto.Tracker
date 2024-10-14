@@ -41,7 +41,7 @@ import com.adityat.crypzee_cryptotrackingapp.screenInBottom
 import com.adityat.crypzee_cryptotrackingapp.screenIntop
 
 @Composable
-fun Dashboard(viewModel: MainViewModel) {
+fun Dashboard(navControllerOld: NavHostController, viewModel: MainViewModel) {
     val navController: NavController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute =
@@ -165,7 +165,7 @@ fun Dashboard(viewModel: MainViewModel) {
             startDestination = Screen.BottomScreens.topScreens.MarketCap.troute,
         ) {
             composable(Screen.BottomScreens.Home.route) {
-                MarketCap(controller = navController, padd, viewModel)
+                MarketCap(navControllerOld, padd, viewModel)
             }
             composable(Screen.BottomScreens.Explore.route) {
                 Explore()
@@ -174,17 +174,18 @@ fun Dashboard(viewModel: MainViewModel) {
                 Settings()
             }
             composable(Screen.BottomScreens.topScreens.MarketCap.troute) {
-                MarketCap(controller = navController, padd, viewModel)
+                MarketCap(navControllerOld, padd, viewModel)
             }
             composable(Screen.BottomScreens.topScreens.Gainers.troute) {
-                Gainer(controller = navController, padd, viewModel)
+                Gainer(navControllerOld, padd, viewModel)
             }
             composable(Screen.BottomScreens.topScreens.Losers.troute) {
-                Losers(controller = navController, padd, viewModel)
+                Losers(navControllerOld, padd, viewModel)
             }
             composable(Screen.BottomScreens.Wishlist.route) {
                 WishList()
             }
+
         }
     }
 }

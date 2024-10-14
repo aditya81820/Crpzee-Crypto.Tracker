@@ -13,9 +13,12 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import com.adityat.crypzee_cryptotrackingapp.MainUI.CoinDescription
 import com.adityat.crypzee_cryptotrackingapp.MainUI.Dashboard
 import com.adityat.crypzee_cryptotrackingapp.SignUporsigninScreens.SignInPage
 import com.adityat.crypzee_cryptotrackingapp.SignUporsigninScreens.SignUphomepage
@@ -37,7 +40,7 @@ class MainActivity : ComponentActivity() {
                     val controller: NavController = rememberNavController()
 
                      Navigation(controller, viewModel)
-                    //Dashboard(viewModel)
+                    //Dashboard(navController, viewModel)
                 }
             }
         }
@@ -62,12 +65,20 @@ fun Navigation(navController: NavController, viewModel: MainViewModel) {
             SignInPage(navController)
         }
         composable(Screen.entityScreen.Dashboard.route) {
-            Dashboard(viewModel)
+            Dashboard(navController, viewModel)
         }
 
         composable(Screen.entityScreen.SignUpScreen.route) {
             Signuppage(navController)
         }
+        composable(
+            route = "${Screen.entityScreen.CoinDescription.route}/{coinId}",
+            arguments = listOf(navArgument("coinId") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val coinId = backStackEntry.arguments?.getString("coinId")
+            CoinDescription(coinId , viewModel)
+        }
+
 
     }
 }

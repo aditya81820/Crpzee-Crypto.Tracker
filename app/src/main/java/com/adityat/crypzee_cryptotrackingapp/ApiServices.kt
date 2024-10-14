@@ -39,4 +39,12 @@ interface ApiService {
         @Query("page") page: Int = 1
     ): List<CoinData>
 
+    @GET("coins/markets")
+    suspend fun getCoinDetails(
+        @Query("vs_currency") currency: String = "usd",
+        @Query("ids") coinId: String  // Query by coin id
+    ): List<CoinData>  // This will return a list, but with only 1 item for the specified coin
+
+
+
 }

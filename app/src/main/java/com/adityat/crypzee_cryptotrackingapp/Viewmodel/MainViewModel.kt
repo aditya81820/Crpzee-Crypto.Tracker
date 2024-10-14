@@ -125,4 +125,31 @@ class MainViewModel : ViewModel() {
             }
         }
     }
+
+    // Coin details handling
+    private val _coinDetails: MutableState<CoinData?> = mutableStateOf(null)
+    val coinDetails: State<CoinData?> get() = _coinDetails
+    val isLoadingCoinDetails = mutableStateOf(true)
+    val errorMessageCoinDetails = mutableStateOf<String?>(null)
+    fun fetchCoinDetails(coinId: String) {
+        viewModelScope.launch {
+            delay(2000)
+
+            isLoadingCoinDetails.value = true
+            try {
+                val result = coinsService.getCoinDetails(coinId = coinId)
+                _coinDetails.value = result.firstOrNull() // Get the first item from the list
+                errorMessageCoinDetails.value = null // Clear error if successful
+            } catch (e: HttpException) {
+                errorMessageCoinDetails.value = "Error loading coin details: ${e.message}"
+            } catch (e: Exception) {
+                errorMessageCoinDetails.value = "Error loading coin details: ${e.localizedMessage}"
+            } finally {
+                isLoadingCoinDetails.value = false
+            }
+        }
+    }
+
+
+
 }

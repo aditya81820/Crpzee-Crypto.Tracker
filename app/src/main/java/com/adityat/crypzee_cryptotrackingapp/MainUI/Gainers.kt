@@ -20,11 +20,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import com.adityat.crypzee_cryptotrackingapp.Viewmodel.MainViewModel
 
 @Composable
-fun Gainer(controller: NavController, padding: PaddingValues, viewModel: MainViewModel) {
+fun Gainer(
+
+    navControllerOld: NavHostController,
+    padding: PaddingValues,
+    viewModel: MainViewModel,
+
+    ) {
     val coinList by viewModel.gainercoinlist
     val isLoading by viewModel.isLoadinggainer
 
@@ -58,7 +64,7 @@ fun Gainer(controller: NavController, padding: PaddingValues, viewModel: MainVie
             LazyColumn(modifier = Modifier.fillMaxSize()) {
 
                 items(coinList, key = { it.id }) { coin ->
-                    CoinItem(coin)
+                    CoinItem(coin, navControllerOld)
                     Row(modifier = Modifier.padding(start =12.dp, end = 12.dp)) {
                         Divider()
                     }

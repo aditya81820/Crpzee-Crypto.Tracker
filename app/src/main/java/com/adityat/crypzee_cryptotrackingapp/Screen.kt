@@ -51,6 +51,8 @@ sealed class Screen(val title: String, val route: String) {
         object SignUpHomeScreen : entityScreen("SIGN-UP-HOME-SCREEN", "sign-up-home-screen")
 
         object Dashboard : entityScreen("Dashboard", "dashboard")
+        object CoinDescription : entityScreen("Coin-Description", "coin-description")
+
 
 
     }
