@@ -1,6 +1,6 @@
-
 package com.adityat.crypzee_cryptotrackingapp.MainUI
 
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -8,11 +8,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.Scaffold
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -26,56 +29,61 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.adityat.crypzee_cryptotrackingapp.Navigation
+import androidx.navigation.compose.rememberNavController
 import com.adityat.crypzee_cryptotrackingapp.Screen
 import com.adityat.crypzee_cryptotrackingapp.Viewmodel.MainViewModel
 import com.adityat.crypzee_cryptotrackingapp.screenInBottom
 import com.adityat.crypzee_cryptotrackingapp.screenIntop
 
 @Composable
-fun Dashboard(controller: NavController) {
-    val navBackStackEntry by controller.currentBackStackEntryAsState()
+fun Dashboard(viewModel: MainViewModel) {
+    val navController: NavController = rememberNavController()
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute =
         navBackStackEntry?.destination?.route ?: Screen.BottomScreens.Home.bRoute // Default to Home
 
-    val viewModel: MainViewModel = viewModel()
     val currentScreen = remember {
         viewModel.currentScreen.value
     }
     val title = remember {
         mutableStateOf(currentScreen.title)
     }
-    val bottombar: @Composable () -> Unit = {
 
+    val bottombar: @Composable () -> Unit = {
         BottomNavigation(
             Modifier.wrapContentSize(),
             backgroundColor = MaterialTheme.colorScheme.primary
         ) {
             screenInBottom.forEach { item ->
                 val isSelected =
-                    (currentRoute == item.bRoute || item == Screen.BottomScreens.Home && (currentRoute == Screen.BottomScreens.topScreens.MarketCap.troute || currentRoute == Screen.BottomScreens.topScreens.Gainers.troute || currentRoute == Screen.BottomScreens.topScreens.Losers.troute))
-                val tint = if (isSelected) Color(0xff4F75FF) else MaterialTheme.colorScheme.secondary
+                    (currentRoute == item.bRoute || item == Screen.BottomScreens.Home &&
+                            (currentRoute == Screen.BottomScreens.topScreens.MarketCap.troute ||
+                                    currentRoute == Screen.BottomScreens.topScreens.Gainers.troute ||
+                                    currentRoute == Screen.BottomScreens.topScreens.Losers.troute))
+                val tint =
+                    if (isSelected) Color(0xff4F75FF) else MaterialTheme.colorScheme.secondary
                 BottomNavigationItem(
                     selected = currentRoute == item.bRoute,
                     onClick = {
-                        controller.navigate(item.bRoute)
+                        navController.navigate(item.bRoute)
                         title.value = item.bTitle
                     },
                     icon = {
                         Icon(imageVector = item.icon, contentDescription = "", tint = tint)
-
                     },
+                    interactionSource = MutableInteractionSource(),
                     selectedContentColor = Color.White,
                     unselectedContentColor = Color.Black
-
                 )
             }
         }
-
     }
+
     Scaffold(
         backgroundColor = MaterialTheme.colorScheme.primary,
         topBar = {
@@ -96,9 +104,9 @@ fun Dashboard(controller: NavController) {
                         )
                     }
                 }
-                if (currentRoute == Screen.BottomScreens.Home.bRoute || currentRoute == Screen.BottomScreens.topScreens.MarketCap.troute ||
-                    currentRoute == Screen.BottomScreens.topScreens.Gainers.troute ||
-                    currentRoute == Screen.BottomScreens.topScreens.Losers.troute
+                if (currentRoute == Screen.entityScreen.Dashboard.eroute || currentRoute == Screen.BottomScreens.Home.route
+                    || currentRoute == Screen.BottomScreens.topScreens.MarketCap.troute || currentRoute == Screen.BottomScreens.topScreens.Gainers.troute
+                    || currentRoute == Screen.BottomScreens.topScreens.Losers.troute
                 ) {
                     BottomNavigation(
                         Modifier.wrapContentSize(),
@@ -106,30 +114,77 @@ fun Dashboard(controller: NavController) {
                     ) {
                         screenIntop.forEach { item ->
                             val isSelected =
-                                (currentRoute == item.troute || currentRoute == Screen.BottomScreens.Home.bRoute && item == Screen.BottomScreens.topScreens.MarketCap)
-                            val color = if (isSelected) Color(0xff4F75FF) else MaterialTheme.colorScheme.secondary
+                                (currentRoute == item.troute || currentRoute == Screen.BottomScreens.Home.bRoute &&
+                                        item == Screen.BottomScreens.topScreens.MarketCap)
+                            val color =
+                                if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.secondary
                             BottomNavigationItem(
                                 selected = currentRoute == item.troute,
                                 onClick = {
-                                    controller.navigate(item.troute)
+                                    navController.navigate(item.troute)
                                 },
                                 icon = {
-                                    Text(text = item.ttitile, color = color)
+                                    Card(
+
+                                        shape = RoundedCornerShape(16.dp),
+                                        colors = CardDefaults.cardColors(
+                                            containerColor = if (isSelected) MaterialTheme.colorScheme.onTertiary else MaterialTheme.colorScheme.primary
+
+                                        )
+
+                                    ) {
+                                        Text(
+                                            text = item.ttitile,
+                                            color = color,
+                                            modifier = Modifier.padding(
+                                                top = 14.dp,
+                                                bottom = 14.dp,
+                                                start = 18.dp,
+                                                end = 18.dp
+                                            ),
+                                        )
+                                    }
+
 
                                 },
+                                interactionSource = MutableInteractionSource(),
                                 selectedContentColor = Color.White,
                                 unselectedContentColor = Color.Black
-
                             )
                         }
                     }
                 }
             }
-
-
         },
         bottomBar = bottombar
-    ) {
-        Navigation(navController = controller, padding = it,viewModel)
+    ) { padd ->
+        // Use the passed controller here, not a new one
+
+        NavHost(
+            navController = navController as NavHostController,
+            startDestination = Screen.BottomScreens.topScreens.MarketCap.troute,
+        ) {
+            composable(Screen.BottomScreens.Home.route) {
+                MarketCap(controller = navController, padd, viewModel)
+            }
+            composable(Screen.BottomScreens.Explore.route) {
+                Explore()
+            }
+            composable(Screen.BottomScreens.Settings.route) {
+                Settings()
+            }
+            composable(Screen.BottomScreens.topScreens.MarketCap.troute) {
+                MarketCap(controller = navController, padd, viewModel)
+            }
+            composable(Screen.BottomScreens.topScreens.Gainers.troute) {
+                Gainer(controller = navController, padd, viewModel)
+            }
+            composable(Screen.BottomScreens.topScreens.Losers.troute) {
+                Losers(controller = navController, padd, viewModel)
+            }
+            composable(Screen.BottomScreens.Wishlist.route) {
+                WishList()
+            }
+        }
     }
 }

@@ -13,9 +13,9 @@ sealed class Screen(val title: String, val route: String) {
     sealed class BottomScreens(val bTitle: String, val bRoute: String, val icon: ImageVector) :
         Screen(bTitle, bRoute) {
         sealed class topScreens(val ttitile: String, val troute: String) : BottomScreens(ttitile, troute, Icons.Default.Home) {
-            object MarketCap : topScreens("MarketCap", "marketcap")
-            object Gainers : topScreens("Gainers", "gainers")
-            object Losers : topScreens("Losers", "losers")
+            object MarketCap : topScreens("MARKETCAP", "marketcap")
+            object Gainers : topScreens("GAINERS", "gainers")
+            object Losers : topScreens("LOSERS", "losers")
 
         }
 
@@ -49,6 +49,8 @@ sealed class Screen(val title: String, val route: String) {
         object SignInScreen : entityScreen("SIGN-IN-SCREEN", "sign-in-screen")
         object SignUpScreen : entityScreen("SIGN-UP-SCREEN", "sign-up-screen")
         object SignUpHomeScreen : entityScreen("SIGN-UP-HOME-SCREEN", "sign-up-home-screen")
+
+        object Dashboard : entityScreen("Dashboard", "dashboard")
 
 
     }

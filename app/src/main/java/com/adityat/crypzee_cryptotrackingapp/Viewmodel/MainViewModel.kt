@@ -14,6 +14,12 @@ import retrofit2.HttpException
 
 
 class MainViewModel : ViewModel() {
+
+    // To track login status
+    private val _isLoggedIn: MutableState<Boolean> = mutableStateOf(false)
+    val isLoggedIn: State<Boolean> get() = _isLoggedIn
+
+
     // For Bottom Navigation
     private val _currentScreen: MutableState<Screen> = mutableStateOf(Screen.BottomScreens.Home)
     val currentScreen: MutableState<Screen> get() = _currentScreen

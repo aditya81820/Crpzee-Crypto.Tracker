@@ -5,24 +5,18 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.adityat.crypzee_cryptotrackingapp.MainUI.Dashboard
-import com.adityat.crypzee_cryptotrackingapp.MainUI.Explore
-import com.adityat.crypzee_cryptotrackingapp.MainUI.Gainer
-import com.adityat.crypzee_cryptotrackingapp.MainUI.Losers
-import com.adityat.crypzee_cryptotrackingapp.MainUI.MarketCap
-import com.adityat.crypzee_cryptotrackingapp.MainUI.Settings
-import com.adityat.crypzee_cryptotrackingapp.MainUI.WishList
 import com.adityat.crypzee_cryptotrackingapp.SignUporsigninScreens.SignInPage
 import com.adityat.crypzee_cryptotrackingapp.SignUporsigninScreens.SignUphomepage
 import com.adityat.crypzee_cryptotrackingapp.SignUporsigninScreens.Signuppage
@@ -39,9 +33,11 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
+                    val viewModel : MainViewModel = viewModel()
                     val controller: NavController = rememberNavController()
-                    // Navigation(controller)
-                    Dashboard(controller)
+
+                     Navigation(controller, viewModel)
+                    //Dashboard(viewModel)
                 }
             }
         }
@@ -49,10 +45,11 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Navigation(navController: NavController, padding: PaddingValues, viewModel: MainViewModel) {
+fun Navigation(navController: NavController, viewModel: MainViewModel) {
+
     NavHost(
         navController = navController as NavHostController,
-        startDestination = Screen.BottomScreens.topScreens.MarketCap.route,
+        startDestination = Screen.entityScreen.SignUpHomeScreen.route,
         enterTransition = { EnterTransition.None },
         exitTransition = { ExitTransition.None },
         popEnterTransition = { EnterTransition.None },
@@ -64,31 +61,12 @@ fun Navigation(navController: NavController, padding: PaddingValues, viewModel: 
         composable(Screen.entityScreen.SignInScreen.route) {
             SignInPage(navController)
         }
+        composable(Screen.entityScreen.Dashboard.route) {
+            Dashboard(viewModel)
+        }
+
         composable(Screen.entityScreen.SignUpScreen.route) {
             Signuppage(navController)
-        }
-        composable(Screen.BottomScreens.Wishlist.route) {
-            WishList()
-        }
-        composable(Screen.BottomScreens.Home.route) {
-            MarketCap(controller = navController, padding = padding , viewModel)
-        }
-
-        composable(Screen.BottomScreens.Explore.route) {
-            Explore()
-        }
-        composable(Screen.BottomScreens.Settings.route) {
-            Settings()
-        }
-        composable(Screen.BottomScreens.topScreens.MarketCap.route) {
-            MarketCap(controller = navController, padding = padding, viewModel = viewModel)
-        }
-        composable(Screen.BottomScreens.topScreens.Gainers.route) {
-            Gainer(controller = navController, padding = padding,viewModel)
-
-        }
-        composable(Screen.BottomScreens.topScreens.Losers.route) {
-            Losers(controller = navController, padding = padding,viewModel)
         }
 
     }
